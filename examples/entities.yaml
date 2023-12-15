@@ -19,6 +19,29 @@ spec:
   system: examples
   providesApis: [example-grpc-api]
 ---
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: example-service
+  description: "An example service to demonstrate the entity format in Backstage"
+  annotations:
+    backstage.io/techdocs-ref: url:https://github.com/path-to-your-docs/
+    backstage.io/kubernetes-id: guestbook
+    backstage.io/kubernetes-label-selector: app=guestbook
+    # Optionally, specify the cluster where this service is deployed
+    backstage.io/kubernetes-cluster: kind
+    # Optionally, specify the namespace in Kubernetes
+    backstage.io/kubernetes-namespace: default
+  labels:
+    system: example-system
+spec:
+  type: service
+  lifecycle: experimental
+  owner: guests
+  system: examples
+  providesApis:
+    - example-grpc-api
+---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
 apiVersion: backstage.io/v1alpha1
 kind: API
