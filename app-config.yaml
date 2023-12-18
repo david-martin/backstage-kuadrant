@@ -102,14 +102,35 @@ catalog:
     #   rules:
     #     - allow: [User, Group]
 kubernetes:
+  customResources:
+    - group: 'gateway.networking.k8s.io'
+      apiVersion: 'v1'
+      plural: 'gateways'
+      kind: 'Gateway'
+    - group: 'gateway.networking.k8s.io'
+      apiVersion: 'v1'
+      plural: 'httproutes'
+      kind: 'HTTPRoute'
   serviceLocatorMethod:
     type: 'multiTenant'
   clusterLocatorMethods:
     - type: 'config'
       clusters:
-        - url: https://127.0.0.1:64806
-          name: kind
+        - url: https://127.0.0.1:51488
+          name: kind-mgc-control-plane
           authProvider: 'serviceAccount'
           skipTLSVerify: true
           skipMetricsLookup: true
-          serviceAccountToken: ${K8S_SA_TOKEN}
+          serviceAccountToken: ${K8S_SA_TOKEN_CP}
+        - url: https://127.0.0.1:51490
+          name: kind-mgc-workload-1
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          serviceAccountToken: ${K8S_SA_TOKEN_W1}
+        - url: https://127.0.0.1:51494
+          name: kind-mgc-workload-2
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          skipMetricsLookup: true
+          serviceAccountToken: ${K8S_SA_TOKEN_W2}

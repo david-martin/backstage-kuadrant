@@ -26,12 +26,12 @@ metadata:
   description: "An example service to demonstrate the entity format in Backstage"
   annotations:
     backstage.io/techdocs-ref: url:https://github.com/path-to-your-docs/
-    backstage.io/kubernetes-id: guestbook
-    backstage.io/kubernetes-label-selector: app=guestbook
+    backstage.io/kubernetes-id: echo
+    backstage.io/kubernetes-label-selector: app=echo
     # Optionally, specify the cluster where this service is deployed
-    backstage.io/kubernetes-cluster: kind
+    #backstage.io/kubernetes-cluster: kind
     # Optionally, specify the namespace in Kubernetes
-    backstage.io/kubernetes-namespace: default
+    #backstage.io/kubernetes-namespace: default
   labels:
     system: example-system
 spec:
@@ -47,18 +47,61 @@ apiVersion: backstage.io/v1alpha1
 kind: API
 metadata:
   name: example-grpc-api
+  annotations:
+    backstage.io/techdocs-ref: url:https://github.com/path-to-your-docs/
+    backstage.io/kubernetes-id: echo
+    backstage.io/kubernetes-label-selector: app=echo
 spec:
-  type: grpc
+  type: openapi
   lifecycle: experimental
   owner: guests
   system: examples
   definition: |
-    syntax = "proto3";
+    openapi: "3.0.0"
+    info:
+      title: User Information Service
+      version: "1.0"
+    paths:
+      /users:
+        get:
+          summary: List all users
+          responses:
+            '200':
+              description: A list of users
+              content:
+                application/json:
+                  schema:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+      /users/{id}:
+        get:
+          summary: Get a user by ID
+          parameters:
+            - in: path
+              name: id
+              required: true
+              schema:
+                type: string
+              description: The user ID
+          responses:
+            '200':
+              description: Detailed information about a user
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/User'
+            '404':
+              description: User not found
+    components:
+      schemas:
+        User:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            email:
+              type: string
 
-    service Exampler {
-      rpc Example (ExampleMessage) returns (ExampleMessage) {};
-    }
-
-    message ExampleMessage {
-      string example = 1;
-    };
